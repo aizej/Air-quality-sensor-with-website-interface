@@ -1,2 +1,5 @@
 # Air-quality-sensor-with-website-interface
-Project with raspbberi pi using MQ-135 sensor to colect data about CO2 levels in my room. Using web interface in the local network.
+Project with Raspberry Pi using an MQ-135 sensor to collect data about CO2 levels in my room. Using web interface in the local network.
+
+
+work in progress :)
