@@ -2,8 +2,12 @@ import sys
 import math
 import operator
 
-t = 22 # assume current temperature. Recommended to measure with DHT22
-h = 65 # assume current humidity. Recommended to measure with DHT22
+
+
+h=65
+t=22
+# assume current temperature. Recommended to measure with DHT22
+# assume current humidity. Recommended to measure with ------
 
 """
 First version of an RaspBerryPi Library for the MQ135 gas sensor
@@ -92,7 +96,7 @@ def getPPM(PARA,RZERO,PARB,value_pin,RLOAD):
 """
 
 def getCorrectedPPM(t,h,CORA,CORB,CORC,CORD,CORE,CORF,CORG,value_pin,RLOAD,PARA,RZERO,PARB):
-	return PARA * math.pow((getCorrectedResistance(t,h,CORA,CORB,CORC,CORD,CORE,CORF,CORG,value_pin,RLOAD)/RZERO), -PARB)
+	return PARA * math.pow(abs(getCorrectedResistance(t,h,CORA,CORB,CORC,CORD,CORE,CORF,CORG,value_pin,RLOAD)/RZERO), -PARB)   # addnig abs becouse getCorrectedResistance caused ValueError: math domain error
 
 """
 @brief  Get the resistance RZero of the sensor for calibration purposes
@@ -145,12 +149,12 @@ def main(value):
 	print("\t Corrected PPM: %s ppm" % round(correctedPPM))
 
 
-def Co2_sensor(value):
+def Co2_sensor(h,t,value):
     value_ads =  value# value obtained by ADS1115
     value_pin = map((value_ads - 565), 0, 26690, 0, 1023) # 565 / 535 fix value
     rzero = getRZero(value_pin,RLOAD,ATMOCO2,PARA,PARB)
     correctedRZero = getCorrectedRZero(t,h,CORA,CORB,CORC,CORD,CORE,CORF,CORG,value_pin,RLOAD,ATMOCO2,PARA,PARB)
-    resistance = getResistance(value_pin,RLOAD)	
-    ppm = getPPM(PARA,RZERO,PARB,value_pin,RLOAD)	
+    resistance = getResistance(value_pin,RLOAD)
+    ppm = getPPM(PARA,RZERO,PARB,value_pin,RLOAD)
     correctedPPM = getCorrectedPPM(t,h,CORA,CORB,CORC,CORD,CORE,CORF,CORG,value_pin,RLOAD,PARA,RZERO,PARB)
     return [ppm,correctedPPM]
