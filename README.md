@@ -21,7 +21,8 @@ Then in the web.py script, we get the last 24 hours of data + current time and p
 Finally, we can look at the results:
 
 
-![stranka_obrazek](https://github.com/aizej/Air-quality-sensor-with-website-interface/assets/61479273/038067c2-9242-4ad3-9822-aeafd1d55855)
+![Snímek obrazovky 2023-12-29 145214](https://github.com/aizej/Air-quality-sensor-with-website-interface/assets/61479273/8568bcdd-063d-422e-b770-95b7eeed9f30)
+
 
 
 DON'T FORGET TO CHANGE RZERO!
