@@ -18,8 +18,16 @@ Then in the web.py script, we get the last 24 hours of data + current time and p
 
 
 
-Finally, we can look at  the result:
+Finally, we can look at the results:
 
 
 ![stranka_obrazek](https://github.com/aizej/Air-quality-sensor-with-website-interface/assets/61479273/038067c2-9242-4ad3-9822-aeafd1d55855)
+
+
+DON'T FORGET TO CHANGE RZERO!
+This sensor needs to be calibrated on outside air to measure the correct PPM.
+Change the RZERO parameter so that it will measure 422 PPM on the outside air.
+
+![Snímek obrazovky 2023-12-29 144446](https://github.com/aizej/Air-quality-sensor-with-website-interface/assets/61479273/ed11bbb0-995a-43ed-afde-4a9674442329)
+
 
