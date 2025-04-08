@@ -13,7 +13,8 @@ And do this every 60 seconds
 
 Then in the stranka.py script, we get the last 24 hours of data + current time, remove outliers and prepare the data for graphing:
 
-![web_script_obrazek](https://github.com/aizej/Air-quality-sensor-with-website-interface/assets/61479273/29d00d3b-f450-4969-8c63-aa542dfd73ae)
+![obrazek](https://github.com/user-attachments/assets/d11d9f41-3d08-4c30-93dd-04525f9ea918)
+
 
 
 
