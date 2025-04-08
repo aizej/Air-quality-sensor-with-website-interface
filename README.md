@@ -13,9 +13,7 @@ And do this every 60 seconds
 
 Then in the stranka.py script, we get the last 24 hours of data + current time, remove outliers and prepare the data for graphing:
 
-![obrazek](https://github.com/user-attachments/assets/d11d9f41-3d08-4c30-93dd-04525f9ea918)
-
-
+![Snímek obrazovky 2025-04-08 114439](https://github.com/user-attachments/assets/26106d7d-5c50-490f-a4a8-220635f9f53a)
 
 
 Finally, we can look at the results:
