@@ -33,26 +33,6 @@ def get_data(number_of_points=60*24+1):
     return df
 
 
-def get_data_deque(number_of_points=60*24):
-    file_path = "/home/pi/Desktop/CO2/myfile.txt"
-    
-
-    with open(file_path, 'r') as f:
-        last_lines = deque(f, maxlen=number_of_points)
-        
-        # Convert to DataFrame
-    df = pd.DataFrame([line.strip().split(',') for line in last_lines], columns=['time', 'PPM', 'temp', 'humidity'])
-
-    # Convert columns to numeric (handling potential NaN values)
-    numeric_cols = ['PPM', 'temp', 'humidity']
-    df[numeric_cols] = df[numeric_cols].apply(pd.to_numeric, errors='coerce')
-    
-    # Convert timestamp column
-    df['time'] = pd.to_numeric(df['time'], errors='coerce')
-    
-    # Drop any rows with NaN values (optional)
-    return df
-
 
 @app.route('/')
 def home():
