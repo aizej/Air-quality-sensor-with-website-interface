@@ -17,8 +17,7 @@ Then in the stranka.py script, we get the last 24 hours of data + current time, 
 
 
 Finally, we can look at the results:
-
-
-![Snímek obrazovky 2023-12-29 145214](https://github.com/aizej/Air-quality-sensor-with-website-interface/assets/61479273/8568bcdd-063d-422e-b770-95b7eeed9f30)
-
-
+![Snímek obrazovky 2025-04-08 114557](https://github.com/user-attachments/assets/17390775-3493-4a28-8524-fe4fd9157f4c)
+![Snímek obrazovky 2025-04-08 114623](https://github.com/user-attachments/assets/06e92e10-09c1-4d91-987b-601e81555593)
+![Snímek obrazovky 2025-04-08 114640](https://github.com/user-attachments/assets/b8a80f95-b57e-4bc3-a62b-2570403bbc00)
+![Snímek obrazovky 2025-04-08 114723](https://github.com/user-attachments/assets/acf3b842-f998-42b4-a9ae-ff5849dd2838)
