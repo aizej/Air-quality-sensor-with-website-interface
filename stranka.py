@@ -1,14 +1,8 @@
 import time 
 import numpy as np
 from flask import Flask, render_template, jsonify, request
-from datetime import datetime, timezone, timedelta
 import pandas as pd
-import subprocess
-from collections import deque
-try:
-    from zoneinfo import ZoneInfo  # Works in Python 3.9+
-except ImportError:
-    from backports.zoneinfo import ZoneInfo  # Use backport for Python 3.7
+
 
 app = Flask(__name__)
 
@@ -18,19 +12,11 @@ splitting_token = ","
 
 
 
-def get_data(number_of_points=60*24+1):
-    file_path = "/home/pi/Desktop/CO2/myfile.txt"
+def get_data():
+    file_path = "/home/pi/Desktop/CO2/cached.pickle"
+    return pd.read_pickle(file_path)
     
 
-    # Use system tail command (works on Linux/Mac, Windows needs alternative)
-    cmd = f"tail -n {number_of_points} {file_path}"
-    result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-
-    # Read the output into DataFrame
-    df = pd.read_csv(pd.compat.StringIO(result.stdout))
-    df.columns = ['time', 'PPM', 'humidity', 'temp']
-    df = df.dropna()
-    return df
 
 
 
@@ -50,18 +36,13 @@ def home():
 
     check_data = time.time()
 
-    # Convert timestamp to time string
-    todays_data["time"] = todays_data["time"].apply(
-        lambda x: datetime.fromtimestamp(x, ZoneInfo('Europe/Prague')).strftime('%H:%M:%S')
-    )
-
-    todays_data["temp"].round(2)
-    todays_data["humidity"].round(2)
+    
 
 
     trend_data = todays_data["PPM"][-60:]
-    trend, _ = np.polyfit(range(len(trend_data)),trend_data, 1)
-    trend = int(trend*len(trend_data))
+    trend_data_len = len(trend_data)
+    trend, _ = np.polyfit(range(trend_data_len),trend_data, 1)
+    trend = int(trend*trend_data_len)
 
     if curr_PPM < 600:
         word = "supr"
@@ -77,29 +58,10 @@ def home():
         word = "Okamžitě vyvětrat!"
 
 
+    polyfit_time = time.time()
 
 
-    rem_out = time.time()
-    
-    # does not preserve the actual data and last window/2 values are None
-    todays_data["PPM_removed_outliers"] = todays_data["PPM"].rolling(window=10, center=True).median()
-    todays_data["temp_removed_outliers"] = todays_data["temp"].rolling(window=10, center=True).median()
-    todays_data["humidity_removed_outliers"] = todays_data["humidity"].rolling(window=10, center=True).median()
-    #get rid of the None by filling them with the original data
-    todays_data["PPM"] = todays_data["PPM_removed_outliers"].fillna(todays_data["PPM"])
-    todays_data["temp"] = todays_data["temp_removed_outliers"].fillna(todays_data["temp"])
-    todays_data["humidity"] = todays_data["humidity_removed_outliers"].fillna(todays_data["humidity"])
-    
-
-    norm = time.time()
-
-    todays_data['PPM_normalised'] = (todays_data['PPM'] - todays_data['PPM'].min()) / (todays_data['PPM'].max() - todays_data['PPM'].min())
-    todays_data['temp_normalised'] = (todays_data['temp'] - todays_data['temp'].min()) / (todays_data['temp'].max() - todays_data['temp'].min())
-    todays_data['humidity_normalised'] = (todays_data['humidity'] - todays_data['humidity'].min()) / (todays_data['humidity'].max() - todays_data['humidity'].min())
-
-
-
-    print(f"Time taken: {check_data-start} {rem_out-check_data}  {norm-rem_out} {time.time()-norm}seconds")
+    print(f"Time taken: {round(check_data-start,2)} {round(polyfit_time-check_data,2)}  {round(time.time()-polyfit_time,2)}seconds")
     # Check if the request is an AJAX request
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         # Return JSON data for AJAX requests
@@ -134,4 +96,4 @@ def home():
                         graph_values_Combined_Humidity=[float(x) for x in todays_data["humidity_normalised"].tolist()])
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    app.run(host='0.0.0.0', port=8000, debug=False)
