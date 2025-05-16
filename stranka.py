@@ -25,13 +25,13 @@ def home():
     # Specify the number and word to be displayed
     start = time.time()
     
-    todays_data = get_data()
+    cashe_graph_labels,cashe_graph_values_CO2,cashe_graph_values_Temperature,cashe_graph_values_Humidity,cashe_graph_values_Combined_CO2,cashe_graph_values_Combined_Temperature,cashe_graph_values_Combined_Humidity = get_data()
     
     curr_time = time.strftime("%H:%M:%S")
 
-    curr_PPM = int(todays_data["PPM"].iloc[-1])
-    curr_humidity = round(float(todays_data["humidity"].iloc[-1]),2)
-    curr_temp = round(float(todays_data["temp"].iloc[-1]),2)
+    curr_PPM = cashe_graph_values_CO2[-1]
+    curr_humidity = round(cashe_graph_values_Humidity[-1],2)
+    curr_temp = round(cashe_graph_values_Temperature[-1],2)
     
 
     check_data = time.time()
@@ -39,7 +39,7 @@ def home():
     
 
 
-    trend_data = todays_data["PPM"][-60:]
+    trend_data = cashe_graph_values_CO2["PPM"][-60:]
     trend_data_len = len(trend_data)
     trend, _ = np.polyfit(range(trend_data_len),trend_data, 1)
     trend = int(trend*trend_data_len)
@@ -70,13 +70,13 @@ def home():
                         word=word,
                         curr_time=curr_time,
                         trend=trend,
-                        graph_labels=todays_data["time"].tolist(),
-                        graph_values_CO2=[int(x) for x in todays_data["PPM"].tolist()],
-                        graph_values_Temperature=[float(x) for x in todays_data["temp"].tolist()],
-                        graph_values_Humidity=[float(x) for x in todays_data["humidity"].tolist()],
-                        graph_values_Combined_CO2=[float(x) for x in todays_data["PPM_normalised"].tolist()],
-                        graph_values_Combined_Temperature=[float(x) for x in todays_data["temp_normalised"].tolist()],
-                        graph_values_Combined_Humidity=[float(x) for x in todays_data["humidity_normalised"].tolist()])
+                        graph_labels=cashe_graph_labels,
+                        graph_values_CO2=cashe_graph_values_CO2,
+                        graph_values_Temperature=cashe_graph_values_Temperature,
+                        graph_values_Humidity=cashe_graph_values_Humidity,
+                        graph_values_Combined_CO2=cashe_graph_values_Combined_CO2,
+                        graph_values_Combined_Temperature=cashe_graph_values_Combined_Temperature,
+                        graph_values_Combined_Humidity=cashe_graph_values_Combined_Humidity)
     else:
         # Render the HTML template for regular browser requests
         return render_template('index.html',
@@ -86,13 +86,13 @@ def home():
                         word=word,
                         curr_time=curr_time,
                         trend=trend,
-                        graph_labels=todays_data["time"].tolist(),
-                        graph_values_CO2=[int(x) for x in todays_data["PPM"].tolist()],
-                        graph_values_Temperature=[float(x) for x in todays_data["temp"].tolist()],
-                        graph_values_Humidity=[float(x) for x in todays_data["humidity"].tolist()],
-                        graph_values_Combined_CO2=[float(x) for x in todays_data["PPM_normalised"].tolist()],
-                        graph_values_Combined_Temperature=[float(x) for x in todays_data["temp_normalised"].tolist()],
-                        graph_values_Combined_Humidity=[float(x) for x in todays_data["humidity_normalised"].tolist()])
+                        graph_labels=cashe_graph_labels,
+                        graph_values_CO2=cashe_graph_values_CO2,
+                        graph_values_Temperature=cashe_graph_values_Temperature,
+                        graph_values_Humidity=cashe_graph_values_Humidity,
+                        graph_values_Combined_CO2=cashe_graph_values_Combined_CO2,
+                        graph_values_Combined_Temperature=cashe_graph_values_Combined_Temperature,
+                        graph_values_Combined_Humidity=cashe_graph_values_Combined_Humidity)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000, debug=False)

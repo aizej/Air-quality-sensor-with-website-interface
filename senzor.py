@@ -71,10 +71,17 @@ while True:
     cache_for_web['temp_normalised'] = (cache_for_web['temp'] - cache_for_web['temp'].min()) / (cache_for_web['temp'].max() - cache_for_web['temp'].min())
     cache_for_web['humidity_normalised'] = (cache_for_web['humidity'] - cache_for_web['humidity'].min()) / (cache_for_web['humidity'].max() - cache_for_web['humidity'].min())
 
+    cashe_graph_labels = cache_for_web['time'].tolist()
+    cashe_graph_values_CO2=[int(x) for x in cache_for_web["PPM"].tolist()]
+    cashe_graph_values_Temperature=[float(x) for x in cache_for_web["temp"].tolist()]
+    cashe_graph_values_Humidity=[float(x) for x in cache_for_web["humidity"].tolist()]
+    cashe_graph_values_Combined_CO2=[float(x) for x in cache_for_web["PPM_normalised"].tolist()]
+    cashe_graph_values_Combined_Temperature=[float(x) for x in cache_for_web["temp_normalised"].tolist()]
+    cashe_graph_values_Combined_Humidity=[float(x) for x in cache_for_web["humidity_normalised"].tolist()]
 
-    
+    chache_ALL_to_pickle = [cashe_graph_labels,cashe_graph_values_CO2,cashe_graph_values_Temperature,cashe_graph_values_Humidity,cashe_graph_values_Combined_CO2,cashe_graph_values_Combined_Temperature,cashe_graph_values_Combined_Humidity]
     with open(pickle_file, 'wb') as f:
-        pickle.dump(cache_for_web, f)
+        pickle.dump(chache_ALL_to_pickle, f)
 
 
     print(f"{PP} {humidity} {temperature} {len(cache_for_web_unprocessed.index)} {round(cache_time-s,2)} total: {round(time.time()-s,2)}s")
