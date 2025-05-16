@@ -2,6 +2,7 @@ import time
 import numpy as np
 from flask import Flask, render_template, jsonify, request
 import pandas as pd
+import pickle
 
 
 app = Flask(__name__)
@@ -14,7 +15,9 @@ splitting_token = ","
 
 def get_data():
     file_path = "/home/pi/Desktop/CO2/cached.pickle"
-    return pd.read_pickle(file_path)
+    with open(file_path, 'rb') as f:
+        data = pickle.load(f)
+    return data
     
 
 
