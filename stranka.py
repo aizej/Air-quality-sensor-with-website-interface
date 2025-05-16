@@ -42,7 +42,7 @@ def home():
     
 
 
-    trend_data = cashe_graph_values_CO2["PPM"][-60:]
+    trend_data = cashe_graph_values_CO2[-60:]
     trend_data_len = len(trend_data)
     trend, _ = np.polyfit(range(trend_data_len),trend_data, 1)
     trend = int(trend*trend_data_len)
