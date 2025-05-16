@@ -58,10 +58,9 @@ def home():
         word = "Okamžitě vyvětrat!"
 
 
-    polyfit_time = time.time()
 
 
-    print(f"Time taken: {round(check_data-start,2)} {round(polyfit_time-check_data,2)}  {round(time.time()-polyfit_time,2)}seconds")
+    print(f"Time taken: {round(check_data-start,2)} {round(time.time()-check_data,2)}  total: {round(time.time()-start,2)} s")
     # Check if the request is an AJAX request
     if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
         # Return JSON data for AJAX requests

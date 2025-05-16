@@ -77,7 +77,7 @@ while True:
         pickle.dump(cache_for_web, f)
 
 
-    print(PP,humidity,temperature,len(cache_for_web_unprocessed.index),round(cache_time-s,2),round(time.time()-s,2))
+    print(f"{PP} {humidity} {temperature} {len(cache_for_web_unprocessed.index)} {round(cache_time-s,2)} total: {round(time.time()-s,2)}s")
     time.sleep(60-(time.time()-s)-1) #antibusy wait
     while time.time()-timer_start < 60:
         pass
