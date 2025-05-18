@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CO2</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    
+
+    <script>
+        $.ajaxSetup({
+    headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+    }
+});
+        $(document).ready(function() {
+            function updateContent() {
+                $.get('/', function(data) {
+                    $('#CO2_PPM_number').text(data.CO2_PPM_number);
+                    $('#Temperature_number').text(data.Temperature_number);
+                    $('#Humidity_number').text(data.Humidity_number);
+                    $('#word').text(data.word);
+                    $('#curr_time').text(data.curr_time);
+                    $('#trend').text(data.trend);
+    
+                    var labels = data.graph_labels;
+                    
+                    var ctx_CO2 = document.getElementById('co2chart').getContext('2d');
+                    var ctx_Temperature = document.getElementById('temperaturechart').getContext('2d');
+                    var ctx_Humidity = document.getElementById('humiditychart').getContext('2d');
+                    var ctx_Combined = document.getElementById('combinedchart').getContext('2d');
+    
+                    function createOrUpdateChart(ctx, label, dataset, color) {
+                        var existingChart = Chart.getChart(ctx);
+                        if (existingChart) existingChart.destroy();
+
+                        new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: label,
+                                    data: dataset,
+                                    fill: true,
+                                    borderColor: color,
+                                    tension: 0.1
+                                }]
+                            },
+                            options: { responsive: true }
+                        });
+                    }
+
+                    
+
+    
+                    createOrUpdateChart(ctx_CO2, "CO2 (ppm)", data.graph_values_CO2, 'rgb(75, 192, 192)');
+                    createOrUpdateChart(ctx_Temperature, "Temperature (°C)", data.graph_values_Temperature, 'rgb(255, 99, 132)');
+                    createOrUpdateChart(ctx_Humidity, "Humidity (%)", data.graph_values_Humidity, 'rgb(54, 162, 235)');
+                    console.log(data);
+                    const config = {
+                        type: 'line',
+                        data: {
+                            labels: data.graph_labels.slice(0, 1440), // Ensure these match your data points
+                            datasets: [
+                            {
+                                label: 'CO2',
+                                data: data.graph_values_Combined_CO2,
+                                borderColor: 'rgb(75, 192, 192)',
+                                fill: false,
+                                tension: 0.1
+                            },
+                            {
+                                label: 'Temperature',
+                                data: data.graph_values_Combined_Temperature,
+                                borderColor: 'rgb(255, 99, 132)',
+                                fill: false,
+                                tension: 0.1
+                            },
+                            {
+                                label: 'Humidity',
+                                data: data.graph_values_Combined_Humidity,
+                                borderColor: 'rgb(54, 162, 235)',
+                                fill: false,
+                                tension: 0.1
+                            }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                            x: {
+                                title: {
+                                display: true,
+                                text: 'Time'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                display: true,
+                                text: 'Normalized Value'
+                                }
+                            }
+                            }
+                        }
+                        };
+
+                        // Create (or update) the chart:
+                        const existingCombinedChart = Chart.getChart(ctx_Combined);
+                        if (existingCombinedChart) {
+                            existingCombinedChart.destroy();
+                        }
+                        new Chart(ctx_Combined, config);
+                    // Create a new chart instance
+
+                });
+            }
+    
+            updateContent();
+            setInterval(updateContent, 60 * 1000);
+        });
+    </script>
+</head>
+
+<body>
+    <h1><span id="curr_time"></span></h1>
+    <h2>CO2 PPM: <span id="CO2_PPM_number"></span></h2>
+    <h2>Temperature: <span id="Temperature_number"></span></h2>
+    <h2>Humidity: <span id="Humidity_number"></span>%</h2>
+    <h4>PPM/h: <span id="trend"></span></h4>
+    <h2>Stav: <span id="word"></span></h2>
+
+    <canvas id="co2chart" width="300" height="100"></canvas>
+    <canvas id="temperaturechart" width="300" height="100"></canvas>
+    <canvas id="humiditychart" width="300" height="100"></canvas>
+    <canvas id="combinedchart" width="300" height="100"></canvas>
+</body>
+</html>
