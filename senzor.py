@@ -51,7 +51,13 @@ while True:
 
     smoothing_window = 10
 
-    cache_for_web_unprocessed = cache_for_web_unprocessed.append({'time': datetime.fromtimestamp(time.time(), ZoneInfo('Europe/Prague')).strftime('%H:%M:%S'), 'PPM': PP, 'humidity': humidity, 'temp': temperature}, ignore_index=True)
+    #use this for oldeer pandas #cache_for_web_unprocessed = cache_for_web_unprocessed.append({'time': datetime.fromtimestamp(time.time(), ZoneInfo('Europe/Prague')).strftime('%H:%M:%S'), 'PPM': PP, 'humidity': humidity, 'temp': temperature}, ignore_index=True)
+    cache_for_web_unprocessed.loc[len(cache_for_web_unprocessed)] = {
+        'time': datetime.fromtimestamp(time.time(), ZoneInfo('Europe/Prague')).strftime('%H:%M:%S'),
+        'PPM': PP,
+        'humidity': humidity,
+        'temp': temperature
+    }
     cache_for_web_unprocessed = cache_for_web_unprocessed.tail(60*24)
 
     cache_for_web = cache_for_web_unprocessed.copy()
