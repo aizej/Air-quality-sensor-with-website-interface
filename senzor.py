@@ -13,7 +13,7 @@ except ImportError:
 
 GPIO_setup()
 
-pickle_file = "/home/pi/Desktop/CO2/cached.pickle"
+pickle_file = "cached.pickle"
 
 
 cache_for_web_unprocessed = pd.DataFrame({
@@ -42,7 +42,7 @@ while True:
     PP = int(PPM())
     
 
-    with open("/home/pi/Desktop/CO2/myfile.txt", 'a') as file1:
+    with open("myfile.txt", 'a') as file1:
         file1.write(f"\n{time.time()},{PP},{humidity},{temperature}")
     
 
