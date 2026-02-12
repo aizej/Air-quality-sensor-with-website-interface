@@ -13,7 +13,7 @@ splitting_token = ","
 
 
 def get_data():
-    file_path = "/home/pi/Desktop/CO2/cached.pickle"
+    file_path = "cached.pickle"
     with open(file_path, 'rb') as f:
         data = pickle.load(f)
     return data
