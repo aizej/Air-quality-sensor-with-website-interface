@@ -17,7 +17,7 @@ from sensirion_driver_adapters.i2c_adapter.i2c_channel import I2cChannel
 from sensirion_i2c_sht4x.device import Sht4xDevice
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--i2c-port', '-p', default='/dev/i2c-3')
+parser.add_argument('--i2c-port', '-p', default='/dev/i2c-1')
 args = parser.parse_args()
 
 def get_avg_of_k_measurements(k):
