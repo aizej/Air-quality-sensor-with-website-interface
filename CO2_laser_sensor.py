@@ -22,10 +22,9 @@ def _ensure_daemon_running():
         # check if systemd service is active
         res = subprocess.run(["systemctl", "is-active", "--quiet", "pigpiod"])
         if res.returncode != 0:
-            # try to start it (may require sudo privileges)
-            subprocess.run(["sudo", "systemctl", "start", "pigpiod"], check=False)
+            print("pigpiod not active!")
     except Exception:
-        # ignore — we'll check connection later and raise helpful error
+        print("Failed to check pigpiod status with systemctl.")
         pass
 
 def GPIO_setup(PWM_PIN=17):
@@ -91,8 +90,7 @@ def PPM(pin=17):
     start = time.time()
     timeout_s = _MEASUREMENT_TIMEOUT_MS / 1000.0
     while (_high_time_ms is None) and (time.time() - start) < timeout_s:
-        # sleep a tiny bit to yield CPU
-        time.sleep(0.005)
+        pass
 
     # cleanup callback (but keep _pi running for further calls)
     try:
