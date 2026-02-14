@@ -20,7 +20,7 @@ pickle_file = "cached.pickle"
 TAKE_SAMPLE_EVERY_SECONDS = 60                     #limited by the speed of SHT45
 SMOOTHING_WINDOW = 10                              #change to 1 for no smoothing
 SHOW_NUMBER_OF_SAMPLES_IN_GRAPH = 60*24            
-NUMBER_OF_SHT45_MEASUREMENTS_TO_AVERAGE = 100      #100 mesuraments takes about 5s
+NUMBER_OF_SHT45_MEASUREMENTS_TO_TAKE_AND_AVERAGE = 100      #100 mesuraments takes about 5s
 
 
 
@@ -42,7 +42,7 @@ temperature = 22
 while True:
     timer_start = time.time()
     
-    result = get_avg_of_k_measurements(NUMBER_OF_SHT45_MEASUREMENTS_TO_AVERAGE)
+    result = get_avg_of_k_measurements(NUMBER_OF_SHT45_MEASUREMENTS_TO_TAKE_AND_AVERAGE)
     if result != None:
         humidity = result[1]
         temperature = result[0]
