@@ -16,6 +16,15 @@ GPIO_setup()
 pickle_file = "cached.pickle"
 
 
+#Changable parameters
+TAKE_SAMPLE_EVERY_SECONDS = 60                     #limited by the speed of SHT45
+SMOOTHING_WINDOW = 10                              #change to 1 for no smoothing
+SHOW_NUMBER_OF_SAMPLES_IN_GRAPH = 60*24            
+NUMBER_OF_SHT45_MEASUREMENTS_TO_AVERAGE = 100      #100 mesuraments takes about 5s
+
+
+
+
 cache_for_web_unprocessed = pd.DataFrame({
     'time':     pd.Series(dtype='str'),
     'PPM':      pd.Series(dtype='int64'),
@@ -28,12 +37,12 @@ temperature = 22
 
 
 
-timer_start = time.time()
+
 
 while True:
-    s = time.time()
+    timer_start = time.time()
     
-    result = get_avg_of_k_measurements(100)
+    result = get_avg_of_k_measurements(NUMBER_OF_SHT45_MEASUREMENTS_TO_AVERAGE)
     if result != None:
         humidity = result[1]
         temperature = result[0]
@@ -49,7 +58,7 @@ while True:
 
     cache_time = time.time()
 
-    smoothing_window = 10
+    
 
     #use this for oldeer pandas #cache_for_web_unprocessed = cache_for_web_unprocessed.append({'time': datetime.fromtimestamp(time.time(), ZoneInfo('Europe/Prague')).strftime('%H:%M:%S'), 'PPM': PP, 'humidity': humidity, 'temp': temperature}, ignore_index=True)
     cache_for_web_unprocessed.loc[len(cache_for_web_unprocessed)] = {
@@ -58,15 +67,17 @@ while True:
         'humidity': humidity,
         'temp': temperature
     }
-    cache_for_web_unprocessed = cache_for_web_unprocessed.tail(60*24)
+
+    cache_for_web_unprocessed = cache_for_web_unprocessed.tail(SHOW_NUMBER_OF_SAMPLES_IN_GRAPH).reset_index(drop=True) #keep only last 24h of data, reset index for easier handling later
+    
 
     cache_for_web = cache_for_web_unprocessed.copy()
 
-    if(len(cache_for_web_unprocessed.index) > smoothing_window):
+    if(len(cache_for_web_unprocessed.index) > SMOOTHING_WINDOW):
         # does not preserve the actual data and last window/2 values are None
-        cache_for_web["PPM_removed_outliers"] = cache_for_web["PPM"].rolling(window=smoothing_window, center=True).median()
-        cache_for_web["temp_removed_outliers"] = cache_for_web["temp"].rolling(window=smoothing_window, center=True).median()
-        cache_for_web["humidity_removed_outliers"] = cache_for_web["humidity"].rolling(window=smoothing_window, center=True).median()
+        cache_for_web["PPM_removed_outliers"] = cache_for_web["PPM"].rolling(window=SMOOTHING_WINDOW, center=True).median()
+        cache_for_web["temp_removed_outliers"] = cache_for_web["temp"].rolling(window=SMOOTHING_WINDOW, center=True).median()
+        cache_for_web["humidity_removed_outliers"] = cache_for_web["humidity"].rolling(window=SMOOTHING_WINDOW, center=True).median()
         #get rid of the None by filling them with the original data
         cache_for_web["PPM"] = cache_for_web["PPM_removed_outliers"].fillna(cache_for_web["PPM"])
         cache_for_web["temp"] = cache_for_web["temp_removed_outliers"].fillna(cache_for_web["temp"])
@@ -90,8 +101,9 @@ while True:
         pickle.dump(chache_ALL_to_pickle, f)
 
 
-    print(f"{PP} {humidity} {temperature} {len(cache_for_web_unprocessed.index)} {round(cache_time-s,2)} total: {round(time.time()-s,2)}s")
-    time.sleep(60-(time.time()-s)-1) #antibusy wait
-    while time.time()-timer_start < 60:
+    print(f"{PP} {humidity} {temperature} {len(cache_for_web_unprocessed.index)} {round(cache_time-timer_start,2)} total: {round(time.time()-timer_start,2)}s")
+    time.sleep(TAKE_SAMPLE_EVERY_SECONDS-(time.time()-timer_start)-1) #antibusy wait
+
+    while time.time()-timer_start < TAKE_SAMPLE_EVERY_SECONDS:
         pass
     timer_start = time.time()
